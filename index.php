@@ -11,7 +11,7 @@
     <script src="js/cookies.js"></script>
 
     <script>
-
+        "use strict";
         $(document).ready(function() {
         $("#loginform").submit(function () {
             $.ajax({
@@ -20,7 +20,7 @@
                 dataType: "json",
                 data: $(this).serialize()
             }).done(function(data) {
-                if (data === true) {
+                if (data.logged === true) {
                     alert(data.message);
                     $("#navbar").append("<li id=\"aboutli\" style=\"float: right;\">\n" +
                         "<button id=\"aboutbutton\">About</button></li>\n" +
@@ -31,6 +31,8 @@
                     $("body").append("<div id=\"game\">\n" +
                         "<h1>JE SUIS LA DIV CONTENANT SOKOBAN</h1>\n" +
                     "</div>")
+                    location.href="";
+                    window.location.reload(false);
                 } else {
                     alert(data.message)
                 }
@@ -40,7 +42,7 @@
 
             $("#logoutbutton").click(function () {
                 $.get("php/logout.php").done(function () {
-                    location.href = "";
+
                     $("#logoutbutton").html("");
                     $("#logindiv").append("<form id=\"loginform\" action=\"php/login.php\" method=\"post\">\n" +
                         "        <h2 id=\"loginMessage\">Please Log In to Play</h2>\n" +
@@ -52,14 +54,15 @@
                         "            <li><button id=\"loginbutton\" type=\"submit\">Log In</button></li>\n" +
                         "        </ul>\n" +
                         "    </form>")
-                    $("#game").html();
+                    $("#game").html("");
+                    
+                    location.href = "";
+                    window.location.reload(false);
                 });
                 return false;
             }
         }
-
         });
-
     </script>
 </head>
 
