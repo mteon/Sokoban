@@ -13,42 +13,53 @@
     <script>
 
         $(document).ready(function() {
-            login();
-            logout();
+        $("#loginform").submit(function () {
+            $.ajax({
+                url: $(this).attr("action"),
+                type: $(this).attr("method"),
+                dataType: "json",
+                data: $(this).serialize()
+            }).done(function(data) {
+                if (data === true) {
+                    alert(data.message);
+                    $("#navbar").append("<li id=\"aboutli\" style=\"float: right;\">\n" +
+                        "<button id=\"aboutbutton\">About</button></li>\n" +
+                        "<li id=\"logoutli\" style=\"float:right\">\n" +
+                        "<button id=\"logoutbutton\" type=\"button\">Logout</button>\n" +
+                        "</li>");
+                    $("#loginform").html("")
+                    $("body").append("<div id=\"game\">\n" +
+                        "<h1>JE SUIS LA DIV CONTENANT SOKOBAN</h1>\n" +
+                    "</div>")
+                } else {
+                    alert(data.message)
+                }
+            });
+            return false;
         });
 
-        function logout() {
             $("#logoutbutton").click(function () {
                 $.get("php/logout.php").done(function () {
                     location.href = "";
-                    
+                    $("#logoutbutton").html("");
+                    $("#logindiv").append("<form id=\"loginform\" action=\"php/login.php\" method=\"post\">\n" +
+                        "        <h2 id=\"loginMessage\">Please Log In to Play</h2>\n" +
+                        "        <label id=\"usernameLabel\">Username</label><br>\n" +
+                        "        <input type=\"text\" placeholder=\"dupont\" name=\"username\" required /><br><br>\n" +
+                        "        <label id=\"passwordLabel\">Password</label><br>\n" +
+                        "        <input type=\"password\" id=\"passwordInput\" name=\"password\" required /><br><br>\n" +
+                        "        <ul id=\"loginButtonContainer\">\n" +
+                        "            <li><button id=\"loginbutton\" type=\"submit\">Log In</button></li>\n" +
+                        "        </ul>\n" +
+                        "    </form>")
+                    $("#game").html();
                 });
                 return false;
             }
         }
 
-        function login() {
-            $("#loginform").submit(function () {
-                $.ajax({
-                    url: $(this).attr("action"),
-                    type: $(this).attr("method"),
-                    dataType: "json",
-                    data: $(this).serialize()
-                }).done(function(data) {
-                    if (data === true) {
-                        alert(data.message);
-                        $("#navbar").append("<li id=\"aboutli\" style=\"float: right;\">\n" +
-                            "<button id=\"aboutbutton\">About</button></li>\n" +
-                            "<li id=\"logoutli\" style=\"float:right\">\n" +
-                            "<button id=\"logoutbutton\" type=\"button\">Logout</button>\n" +
-                            "</li>");
-                        $("#logindiv").html("")
-                    } else {
-                        alert(data.message)
-                    }
-                });
-                return false;
-            });
+        });
+
     </script>
 </head>
 
@@ -79,7 +90,5 @@
     </form>
 </div>
 
-<div id="game">
-    <h1>JE SUIS LA DIV CONTENANT SOKOBAN</h1>
-</div>
+
 </body>
