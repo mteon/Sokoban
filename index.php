@@ -13,7 +13,8 @@
     <script>
         "use strict";
         $(document).ready(function() {
-        $("#loginform").submit(function () {
+        $("#loginform").submit(function (event) {
+            event.preventDefault();
             $.ajax({
                 url: $(this).attr("action"),
                 type: $(this).attr("method"),
@@ -41,8 +42,8 @@
         });
 
             $("#logoutbutton").click(function () {
-                $.get("php/logout.php").done(function () {
-
+                $.get("php/logout.php").done(function (event) {
+                    event.preventDefault();
                     $("#logoutbutton").html("");
                     $("#logindiv").append("<form id=\"loginform\" action=\"php/login.php\" method=\"post\">\n" +
                         "        <h2 id=\"loginMessage\">Please Log In to Play</h2>\n" +
@@ -55,7 +56,7 @@
                         "        </ul>\n" +
                         "    </form>")
                     $("#game").html("");
-                    
+
                     location.href = "";
                     window.location.reload(false);
                 });
