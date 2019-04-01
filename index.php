@@ -1,72 +1,85 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: teoma
- * Date: 28/03/2019
- * Time: 20:06
- */
-
-session_start();
-?>
 <!doctype html>
 
-<html lang="fr">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <title>Sokoban</title>
+    <link rel="stylesheet" type="text/css" href="css/sokoban.css">
+    <link rel="icon" href="favicon/favicon.ico" />
 
     <script src="js/jquery-3.3.1.min.js"></script>
-    <script src="sokoban.js"></script>
-    <script src="cookies.js"></script>
+    <script src="js/sokoban.js"></script>
+    <script src="js/cookies.js"></script>
+
     <script>
-        "use strict";
-        $(document).ready(function () {
-            $("#loginForm").submit(function (event){
-                event.preventDefault();
+
+        $(document).ready(function() {
+            login();
+            logout();
+        });
+
+        function logout() {
+            $("#logoutbutton").click(function () {
+                $.get("php/logout.php").done(function () {
+                    location.href = "";
+                    
+                });
+                return false;
+            }
+        }
+
+        function login() {
+            $("#loginform").submit(function () {
                 $.ajax({
                     url: $(this).attr("action"),
                     type: $(this).attr("method"),
-                    dataType : "json",
+                    dataType: "json",
                     data: $(this).serialize()
-                }).done(function (data) {
-                    alert(data.message);
-                    location.href = "";
+                }).done(function(data) {
+                    if (data === true) {
+                        alert(data.message);
+                        $("#navbar").append("<li id=\"aboutli\" style=\"float: right;\">\n" +
+                            "<button id=\"aboutbutton\">About</button></li>\n" +
+                            "<li id=\"logoutli\" style=\"float:right\">\n" +
+                            "<button id=\"logoutbutton\" type=\"button\">Logout</button>\n" +
+                            "</li>");
+                        $("#logindiv").html("")
+                    } else {
+                        alert(data.message)
+                    }
                 });
                 return false;
             });
-        })
-
-        $("#logoutbutton").click(function () {
-            $.get("php/logout.php").done(function (done) {
-                location.href = "";
-            })
-        });
-
-
     </script>
-
 </head>
 
 <body>
-    <header>
-        <h2>Sokoban</h2>
-        <div id="disconnect" style="display: <?php if(isset($_SESSION['username']))echo "none";else echo "block";?>">
-            <form>
-                <button id="logoutbutton" type="submit">Logout</button>
-            </form>
-        </div>
-    </header>
-    <div name="content" style="display: <?php if(isset($_SESSION['username']))echo "block";else echo "none";?>">
-        <form id="loginForm" method="post" action="/is_connected.php">
-            <label>Username</label>
-            <input name="username">
-            <label>Password</label>
-            <input type="password" name="password">
-            <button type="submit">Login</button>
-        </form>
-    </div>
+<header>
+    <ul id="navbar">
+        <li id="titleofwebsite"><p>Sokoban</p></li>
+    </ul>
+</header>
 
-    <div id="btn"></div>
-    <div id="game"></div>
+
+<div id="about">
+    <p>Bienvenue sur le site du jeu Sokoban ! <br> Le principe du jeu est simple : le joueur (en rouge) doit pousser
+        tous les blocs (en rouge) dans une zone délimitée (en orange) pour gagner. <br> Il y a une soixantaine de
+        niveaux a passer, amusez-vous bien !</p>
+</div>
+
+<div id="logindiv">
+    <form id="loginform" action="php/login.php" method="post">
+        <h2 id="loginMessage">Please Log In to Play</h2>
+        <label id="usernameLabel">Username</label><br>
+        <input type="text" placeholder="dupont" name="username" required /><br><br>
+        <label id="passwordLabel">Password</label><br>
+        <input type="password" id="passwordInput" name="password" required /><br><br>
+        <ul id="loginButtonContainer">
+            <li><button id="loginbutton" type="submit">Log In</button></li>
+        </ul>
+    </form>
+</div>
+
+<div id="game">
+    <h1>JE SUIS LA DIV CONTENANT SOKOBAN</h1>
+</div>
 </body>
-</html>
