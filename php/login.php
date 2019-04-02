@@ -18,10 +18,11 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
             $_SESSION['level'] = $user->level;
             $data->logged = true;
             $data->message = 'Connecté, Bienvenu '.$_SESSION['username'];
+            $data->level = $user->level;
         }
     }
 }
 header('Cache-Control: no-cache, must-revalidate');
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 header('Content-type: application/json');
-echo json_encode($data);;
+echo json_encode($data);

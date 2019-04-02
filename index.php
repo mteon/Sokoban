@@ -10,60 +10,90 @@
     <script src="js/sokoban.js"></script>
     <script src="js/cookies.js"></script>
 
-    <script>
+    <script type="text/javascript">
         "use strict";
+
+        var currentLevel;
+
         $(document).ready(function() {
-        $("#loginform").submit(function (event) {
-            event.preventDefault();
+            isLogged();
+        });
+
+        function logout(){
             $.ajax({
-                url: $(this).attr("action"),
-                type: $(this).attr("method"),
-                dataType: "json",
-                data: $(this).serialize()
-            }).done(function(data) {
-                if (data.logged === true) {
-                    alert(data.message);
-                    $("#navbar").append("<li id=\"aboutli\" style=\"float: right;\">\n" +
-                        "<button id=\"aboutbutton\">About</button></li>\n" +
-                        "<li id=\"logoutli\" style=\"float:right\">\n" +
-                        "<button id=\"logoutbutton\" type=\"button\">Logout</button>\n" +
-                        "</li>");
-                    $("#loginform").html("")
-                    $("body").append("<div id=\"game\">\n" +
-                        "<h1>JE SUIS LA DIV CONTENANT SOKOBAN</h1>\n" +
-                    "</div>")
-                    location.href="";
-                    window.location.reload(false);
-                } else {
-                    alert(data.message)
+                url: "php/logout.php",
+                success: function () {
+                    showForm();
+                    initlogin();
                 }
             });
             return false;
-        });
+        }
 
-            $("#logoutbutton").click(function () {
-                $.get("php/logout.php").done(function (event) {
-                    event.preventDefault();
-                    $("#logoutbutton").html("");
-                    $("#logindiv").append("<form id=\"loginform\" action=\"php/login.php\" method=\"post\">\n" +
-                        "        <h2 id=\"loginMessage\">Please Log In to Play</h2>\n" +
-                        "        <label id=\"usernameLabel\">Username</label><br>\n" +
-                        "        <input type=\"text\" placeholder=\"dupont\" name=\"username\" required /><br><br>\n" +
-                        "        <label id=\"passwordLabel\">Password</label><br>\n" +
-                        "        <input type=\"password\" id=\"passwordInput\" name=\"password\" required /><br><br>\n" +
-                        "        <ul id=\"loginButtonContainer\">\n" +
-                        "            <li><button id=\"loginbutton\" type=\"submit\">Log In</button></li>\n" +
-                        "        </ul>\n" +
-                        "    </form>")
-                    $("#game").html("");
+        function initlogin(){
+            $("#loginform").submit(function () {
+                $.ajax({
+                    url: "php/login.php",
+                    type: "POST",
+                    dataType: "json",
+                    data: $(this).serialize(),
+                    success: function (data) {
+                        if (data.logged === true) {7
+                            currentLevel = data.level;
+                            alert(data.message);
+                            showGame();
+                            loadCurrentLevel(currentLevel);
 
-                    location.href = "";
-                    window.location.reload(false);
+                        }
+                    }
                 });
                 return false;
-            }
+            })
         }
-        });
+
+        function showGame(){
+            $("#loginform").hide();
+            $("#navbar").append("<li id=\"aboutli\" style=\"float: right;\">\n" +
+                "<button id=\"aboutbutton\">About</button></li>\n" +
+                "<li id=\"logoutli\" style=\"float:right\">\n" +
+                "<button id=\"logoutbutton\" type=\"button\" onclick=\"logout();\">Logout</button>\n" +
+                "</li>");
+            $("#game").show();
+        }
+
+        function showForm(){
+            console.log("disconnected");
+            $("#logoutbutton").hide();
+            $("#logindiv").empty()
+                .append("<form id=\"loginform\">\n" +
+                "        <h2 id=\"loginMessage\">Please Log In to Play</h2>\n" +
+                "        <label id=\"usernameLabel\">Username</label><br>\n" +
+                "        <input type=\"text\" placeholder=\"dupont\" name=\"username\" required /><br><br>\n" +
+                "        <label id=\"passwordLabel\">Password</label><br>\n" +
+                "        <input type=\"password\" id=\"passwordInput\" name=\"password\" required /><br><br>\n" +
+                "        <ul id=\"loginButtonContainer\">\n" +
+                "            <li><button id=\"loginbutton\" type=\"submit\">Log In</button></li>\n" +
+                "        </ul>\n" +
+                "    </form>");
+            $("#game").hide();
+        }
+
+        function isLogged(){
+            $.ajax({
+                url: "php/is_connected.php",
+                type: "GET",
+                success: function (data) {
+                    if(data === true){
+                        showGame();
+                    }
+                    else {
+                        showForm();
+                        initlogin();
+                    }
+                }
+            });
+            return false;
+        }
     </script>
 </head>
 
@@ -76,23 +106,14 @@
 
 
 <div id="about">
-    <p>Bienvenue sur le site du jeu Sokoban ! <br> Le principe du jeu est simple : le joueur (en rouge) doit pousser
+    <p>Bienvenue sur le site du jeu Sokoban ! <br> Le principe du jeu est simple : le joueur (en bleu) doit pousser
         tous les blocs (en rouge) dans une zone délimitée (en orange) pour gagner. <br> Il y a une soixantaine de
         niveaux a passer, amusez-vous bien !</p>
 </div>
 
 <div id="logindiv">
-    <form id="loginform" action="php/login.php" method="post">
-        <h2 id="loginMessage">Please Log In to Play</h2>
-        <label id="usernameLabel">Username</label><br>
-        <input type="text" placeholder="dupont" name="username" required /><br><br>
-        <label id="passwordLabel">Password</label><br>
-        <input type="password" id="passwordInput" name="password" required /><br><br>
-        <ul id="loginButtonContainer">
-            <li><button id="loginbutton" type="submit">Log In</button></li>
-        </ul>
-    </form>
 </div>
 
+<div id="game"></div>
 
 </body>
