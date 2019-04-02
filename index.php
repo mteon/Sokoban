@@ -14,7 +14,6 @@
         $(document).ready(function() {
             isLogged();
             initlogin();
-
             function Sokoban () {
                 this.level = 0;                 // L'id du niveau
                 this.tableGrid = [];            // La grille de jeu
@@ -156,7 +155,7 @@
                         if (i === 0 || i === 19 || j === 0 || j === 24) {
                             grid[i][j] = '#'
                         } else {
-                            $('<td />').appendTo(tr).css({'height': '30px','width': '30px', 'color': 'rgba(0, 0, 0, 0)'}).css('background-color', 'white').data('color', 'white')// ... ainsi que les colonnes
+                            $('<td />').appendTo(tr).css({'height': '30px','width': '30px', 'color': 'rgba(0, 0, 0, 0)'}).css('background-color', 'white').data('color', 'white') //ainsi que les colonnes
                         }
                     }
                 }
@@ -236,7 +235,7 @@
                 if (levelSelected) {
                     sokoban.checkMove(e.which);
                     if (sokoban.won) {
-                        alert('gg');
+                        alert('Level Cleared');
                         if (!getCookieLvl(sokoban.level)) {
                             setCookie(getCookie() + ',' + sokoban.level);
                             updateButtons();
@@ -244,6 +243,7 @@
                     }
                 }
             });
+
         });
 
         function logout(){
@@ -276,19 +276,20 @@
         }
 
         function showGame(){
+
             $("#loginform").hide();
+            $('#btn').show();
+            $('#game').show();
             $("#navbar").append("<li id=\"aboutli\" style=\"float: right;\">\n" +
                 "<button id=\"aboutbutton\">About</button></li>\n" +
                 "<li id=\"logoutli\" style=\"float:right\">\n" +
                 "<button id=\"logoutbutton\" type=\"button\" onclick=\"logout();\">Logout</button>\n" +
                 "</li>");
-         //   $("body").append("<div id=\"btn\"></div>\n" +
-         //       "<div id=\"game\"></div>\n");
         }
 
         function showForm(){
             $("#logoutbutton").hide();
-            $("#aboutli").hide()
+            $("#aboutli").hide();
             $("#logindiv").empty()
                 .append("<form id=\"loginform\">\n" +
                 "        <h2 id=\"loginMessage\">Please Log In to Play</h2>\n" +
@@ -300,9 +301,11 @@
                 "            <li><button id=\"loginbutton\" type=\"submit\">Log In</button></li>\n" +
                 "        </ul>\n" +
                 "    </form>");
+
             $("#btn").hide();
             $("#game").hide();
         }
+
 
         function isLogged(){
             $.ajax({
@@ -320,6 +323,8 @@
             });
             return false;
         }
+
+
     </script>
 </head>
 
@@ -337,9 +342,8 @@
         niveaux a passer, amusez-vous bien !</p>
 </div>
 
-<div id="logindiv">
-</div>
-
+<div id="logindiv"></div>
 <div id="btn"></div>
 <div id="game"></div>
+
 </body>
